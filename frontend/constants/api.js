@@ -7,7 +7,7 @@ const hostUri = Constants.expoConfig?.hostUri;
 const machineIp = hostUri ? hostUri.split(':')[0] : 'localhost';
 
 const LOCALHOST = Platform.OS === 'android' ? '10.0.2.2' : 'localhost';
-const PRODUCTION_URL = 'https://commerce-api.onrender.com/api';
+const PRODUCTION_URL = 'https://commerce-api-3w32.onrender.com/api';
 
 // Use production by default for builds, use local IP/localhost for development
 // If you are using Expo Go on a physical device, it will use machineIp
