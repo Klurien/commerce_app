@@ -18,17 +18,19 @@ app.get('/health', (req, res) => {
 });
 
 // DB Connection
-// DB Connection
-const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/multivendor';
-console.log(`Connecting to MongoDB: ${mongoURI.replace(/:([^@]+)@/, ':****@')}`);
+const mongoURI = process.env.MONGO_URI;
+if (!mongoURI) {
+  console.error('FATAL ERROR: MONGO_URI is not defined in environment variables.');
+  process.exit(1);
+}
 
-mongoose.connect(mongoURI, {
-  // Explicitly ensuring no legacy options are passed if people add them to ENV
-}).then(() => {
+console.log('Connecting to MongoDB Atlas...');
+
+mongoose.connect(mongoURI).then(() => {
   console.log('Connected to MongoDB');
 }).catch(err => {
   console.error('MongoDB connection error!!', err);
-  process.exit(1); // Exit if DB fails
+  process.exit(1);
 });
 
 // Routes
@@ -38,6 +40,6 @@ app.use('/api/seller', require('./routes/sellerRoutes'));
 app.use('/api/buyer', require('./routes/buyerRoutes'));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on 0.0.0.0:${PORT}`);
 });
