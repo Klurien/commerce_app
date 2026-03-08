@@ -1,17 +1,24 @@
 const admin = require('firebase-admin');
 
 try {
-    // Expected to be configured via environment variable: GOOGLE_APPLICATION_CREDENTIALS
-    // or by passing a serviceAccount to initializeApp()
     if (!admin.apps.length) {
-        admin.initializeApp({
-            credential: admin.credential.applicationDefault()
-        });
-        console.log("Firebase Admin initialized successfully");
+        if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+            const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount)
+            });
+            console.log("Firebase Admin initialized with service account from ENV");
+        } else {
+            // Expected to be configured via environment variable: GOOGLE_APPLICATION_CREDENTIALS
+            admin.initializeApp({
+                credential: admin.credential.applicationDefault()
+            });
+            console.log("Firebase Admin initialized with applicationDefault()");
+        }
     }
 } catch (error) {
     console.error("Firebase Admin initialization error:", error.message);
-    console.log("Ensure GOOGLE_APPLICATION_CREDENTIALS is set or provide a service account config.");
+    console.log("Ensure FIREBASE_SERVICE_ACCOUNT (JSON string) or GOOGLE_APPLICATION_CREDENTIALS is set.");
 }
 
 module.exports = admin;

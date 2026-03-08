@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 const User = require('./models/User');
 const Dish = require('./models/Dish');
 const Hotel = require('./models/Hotel');
 
 async function checkData() {
     try {
-        await mongoose.connect('mongodb://127.0.0.1:27017/multivendor');
+        const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/multivendor';
+        console.log(`Searching for data at: ${uri.replace(/:([^:@]{4,})@/, ':****@')}`);
+        await mongoose.connect(uri);
         const sellers = await User.find({ role: 'seller' }).limit(5);
         const dishes = await Dish.find({}).limit(5);
         const hotels = await Hotel.find({}).limit(5);
